@@ -9,7 +9,7 @@ void main(){
     // Grid
     vec2 customUv = round((vUv + (subdivisionFactor * 0.5)) / subdivisionFactor) * subdivisionFactor;
 
-    // float strength = 1.0 - smoothstep(distance(customUv, vUv + (subdivisionFactor * 0.5)), 0.0, subdivisionFactor * 0.25);
+    // Dot
     float strength = 1.0 - step(smoothstep(distance(customUv, vUv + (subdivisionFactor * 0.5)), 0.0, subdivisionFactor * 0.25), 0.5);
 
     // Image
@@ -18,7 +18,5 @@ void main(){
     // Opacity
     float opacity = color.w - strength;
 
-    gl_FragColor = vec4(strength, strength, strength, 1.0);
-    gl_FragColor = vec4(color.x, color.y, color.z, opacity);
-    // gl_FragColor = vec4(color);
+    gl_FragColor = vec4(color.xyz, opacity);
 }

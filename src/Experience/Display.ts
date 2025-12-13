@@ -8,7 +8,7 @@ export class Display {
   geometry: THREE.BufferGeometry;
   material: THREE.ShaderMaterial;
   mesh: THREE.Mesh;
-  baseImagePath: string = "/strawberry.png";
+  baseImagePath: string = "/strawberry-2.png";
   baseImage: THREE.Texture;
 
   constructor(textureLoader: THREE.TextureLoader, pane: Pane) {
@@ -24,8 +24,9 @@ export class Display {
       },
       vertexShader: vertexShader,
       fragmentShader: fragmentShader,
+      transparent: true
     });
-    pane.addBinding(this.material.uniforms.subdivisions, 'value', {min: 2, max: 100, step: 1})
+    pane.addBinding(this.material.uniforms.subdivisions, 'value', {min: 5, max: 100, step: 1})
 
     this.mesh = new THREE.Mesh(this.geometry, this.material);
   }

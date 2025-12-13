@@ -39,15 +39,33 @@ export class Experience {
       antialias : true
     });
     this.renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2))
-    this.renderer.setSize(512, 512);
+    if(window.innerWidth / window.innerHeight < 1){
+      this.renderer.setSize(window.innerWidth, window.innerWidth);
+    }
+    else{
+      this.renderer.setSize(window.innerHeight, window.innerHeight);
+    }
+    this.renderer.setClearAlpha(0)
     this.appHTML.appendChild(this.renderer.domElement);
 
     // Display
     this.display = new Display(this.textureLoader, this.pane)
     this.scene.add(this.display.mesh)
 
+    // On resize
+    window.addEventListener('resize', this.handleResize)
+
     // Animate
     this.animate()
+  }
+
+  handleResize = () => {
+    if(window.innerWidth / window.innerHeight < 1){
+      this.renderer.setSize(window.innerWidth, window.innerWidth);
+    }
+    else{
+     this.renderer.setSize(window.innerHeight, window.innerHeight);
+    }
   }
 
   animate = () => {
