@@ -10,6 +10,7 @@ export class Experience {
   renderer: THREE.WebGLRenderer;
   appHTML: HTMLElement;
   display: Display;
+  clock: THREE.Clock;
 
   constructor() {
     // Pane
@@ -56,6 +57,7 @@ export class Experience {
     window.addEventListener('resize', this.handleResize)
 
     // Animate
+    this.clock = new THREE.Clock()
     this.animate()
   }
 
@@ -69,7 +71,11 @@ export class Experience {
   }
 
   animate = () => {
+    const elapsedTime = this.clock.getElapsedTime()
+
     this.renderer.render(this.scene, this.camera);
+
+    this.display.material.uniforms.uTime.value = elapsedTime;
 
     requestAnimationFrame(this.animate)
   }

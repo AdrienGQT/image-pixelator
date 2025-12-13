@@ -1,10 +1,16 @@
-uniform sampler2D baseImage;
-uniform float subdivisions;
+uniform sampler2D uBaseImage;
+uniform float uSubdivisions;
+uniform float uNoiseSize;
+uniform float uNoiseTolerance;
+uniform float uTime;
+uniform float uTimeSpeed;
 
 varying vec2 vUv;
 
+#include ./includes/classicPerlin2DNoise.glsl
+
 void main(){
-    float subdivisionFactor = 1.0 / subdivisions;
+    float subdivisionFactor = 1.0 / uSubdivisions;
 
     // Grid
     vec2 customUv = round((vUv + (subdivisionFactor * 0.5)) / subdivisionFactor) * subdivisionFactor;
@@ -13,10 +19,16 @@ void main(){
     float strength = 1.0 - step(smoothstep(distance(customUv, vUv + (subdivisionFactor * 0.5)), 0.0, subdivisionFactor * 0.25), 0.5);
 
     // Image
-    vec4 color = texture2D(baseImage, customUv);
+    vec4 color = texture2D(uBaseImage, customUv);
+
+    // Noise
+    float type = cnoise(vec3(customUv * uNoiseSize, uTime * uTimeSpeed));
+    type = type * 0.5 + 0.5;
+    type = step(type, uNoiseTolerance);
 
     // Opacity
-    float opacity = color.w - strength;
+    float opacity = color.w - (strength * type);
 
     gl_FragColor = vec4(color.xyz, opacity);
+
 }

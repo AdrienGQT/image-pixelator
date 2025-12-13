@@ -17,16 +17,45 @@ export class Display {
     this.baseImage = textureLoader.load(this.baseImagePath);
 
     this.geometry = new THREE.PlaneGeometry(1, 1);
+
     this.material = new THREE.ShaderMaterial({
       uniforms: {
-        baseImage: { value: this.baseImage },
-        subdivisions: { value: 25 },
+        uBaseImage: { value: this.baseImage },
+        uSubdivisions: { value: 30 },
+        uNoiseSize: { value: 5 },
+        uNoiseTolerance: { value: 0.5 },
+        uTime : { value : 0},
+        uTimeSpeed : {value : 1}
       },
       vertexShader: vertexShader,
       fragmentShader: fragmentShader,
-      transparent: true
+      transparent: true,
     });
-    pane.addBinding(this.material.uniforms.subdivisions, 'value', {min: 5, max: 100, step: 1})
+
+    pane.addBinding(this.material.uniforms.uSubdivisions, "value", {
+      min: 5,
+      max: 100,
+      step: 1,
+      label: "subdivisions",
+    });
+    pane.addBinding(this.material.uniforms.uNoiseSize, "value", {
+      min: 1,
+      max: 10,
+      step: 0.1,
+      label: "noiseSize",
+    });
+    pane.addBinding(this.material.uniforms.uNoiseTolerance, "value", {
+      min: 0.0,
+      max: 1,
+      step: 0.001,
+      label: "noiseTolerance",
+    });
+    pane.addBinding(this.material.uniforms.uTimeSpeed, "value", {
+      min: 0.0,
+      max: 15,
+      step: 0.01,
+      label: "timeSpeed",
+    });
 
     this.mesh = new THREE.Mesh(this.geometry, this.material);
   }
