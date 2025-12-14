@@ -8,19 +8,22 @@ export class Display {
   geometry: THREE.BufferGeometry;
   material: THREE.ShaderMaterial;
   mesh: THREE.Mesh;
-  baseImagePath: string = "/strawberry-2.png";
-  baseImage: THREE.Texture;
+  baseImagePaths:string[] = ['/strawberry.png','/banana.png', 'apple.png']
+  baseImageTextures: THREE.Texture[] = []
+  currentImageTextureIndex: number = 0
 
   constructor(textureLoader: THREE.TextureLoader, pane: Pane) {
     this.pane = pane;
 
-    this.baseImage = textureLoader.load(this.baseImagePath);
+    this.baseImagePaths.forEach((path: string) => {
+      this.baseImageTextures.push(textureLoader.load(path))
+    })
 
     this.geometry = new THREE.PlaneGeometry(1, 1);
 
     this.material = new THREE.ShaderMaterial({
       uniforms: {
-        uBaseImage: { value: this.baseImage },
+        uBaseImage: { value: this.baseImageTextures[this.currentImageTextureIndex] },
         uSubdivisions: { value: 30 },
         uNoiseSize: { value: 5 },
         uNoiseTolerance: { value: 0.5 },
@@ -56,6 +59,15 @@ export class Display {
       step: 0.01,
       label: "timeSpeed",
     });
+
+    const nextTextureButton = pane.addButton({
+      title: 'Next image',
+      label: 'texture'
+    })
+    nextTextureButton.on('click', () => {
+      this.currentImageTextureIndex = (this.currentImageTextureIndex + 1) % this.baseImageTextures.length
+      this.material.uniforms.uBaseImage.value = this.baseImageTextures[this.currentImageTextureIndex]
+    })
 
     this.mesh = new THREE.Mesh(this.geometry, this.material);
   }
